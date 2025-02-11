@@ -1,0 +1,15 @@
+-456 - int
+false - booleano
+“0.87” - string
+1.67 - float
+“Casa 8” - string
+0 - int
+1000 - int 
+true - booleano
+“-900” - string
+3 - int
+0.0 - float
+-3.1415 -float
+32150 -int
+128288 - int 
+“false” - string
