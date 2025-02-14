@@ -26,7 +26,10 @@ do {
         echo "1 - Cadastrar Produto\n";
         echo "2 - Atualizar Produto\n";
         echo "3 - Vender Produto\n";
-        echo "4 - Logout\n";
+        echo "4 - Mostrar Logs\n";
+        echo "5 - Mostrar Todos os Produtos\n";
+        echo "6 - Deletar Produto\n";
+        echo "7 - Logout\n";
         echo "Escolha uma opção: ";
         $opcao = readline();
         switch ($opcao) {
@@ -45,7 +48,6 @@ do {
                 $stock = readline("Novo estoque (ou deixe em branco para manter): ");
                 $item = [
                     'id_procut' => $id_procut,
-                    'name' => $name ?: null,
                     'price' => $price ?: null,
                     'stock' => $stock ?: null
                 ];
@@ -56,8 +58,20 @@ do {
                 sale_product();
                 break;
             case 4:
+                get_logs();
+                break;
+            case 5:
+                print_products();
+                break;
+            case 6:
+                $id=readline('Digite o ID do produto a ser excluido: ');
+                delete_product($id);
+                break;            
+            case 7:
                 logout();
                 break;
+            default:
+                echo "Valor Inválido";
         }
     }
 } while ($opcao != 0);

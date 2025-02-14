@@ -44,13 +44,10 @@ include "common.php";
     }
     //Deslogar
     function logout(){
-        if(!isset( $_SESSION['id'])){
-            echo "\nNenhum usuário logado\n";
-            return false;
-        }
         unset($_SESSION['id']);
         unset($_SESSION['caixa']);
         save_log("Usuário deslogou");
+        system('cls');
         echo "\nDeslogado com sucesso!!\n";
         return true;
     }
@@ -58,7 +55,7 @@ include "common.php";
     function add_product($item){
         $products=get_products();
         $new_item=[
-            'id_procut'=>(count($products)+1)?:1,
+            'id_product'=>(count($products)+1)?:1,
             'name'=>$item['name'],
             'price'=>$item['price'],
             'stock'=>$item['stock'],
@@ -77,7 +74,7 @@ include "common.php";
         do{
             $id_product=readline("Digite o id do produto: ");
             for($i=0;$i<count($products);$i++){
-                if($products[$i]['id_procut']==$id_product){
+                if($products[$i]['id_product']==$id_product){
                     if($products[$i]['stock']>0){
                         $total+=$products[$i]['price'];
                         $products[$i]['stock']--;
@@ -92,7 +89,7 @@ include "common.php";
                 echo "\nID de produto não existe\n";
             }
             $continue=readline('Deseja adicionar mais produtos?(S/N)');
-        }while(strtolower($continue) !== 'n');
+        }while(strtolower($continue)!=='n');
         echo "Compra ficou no valor de R$ $total\n";
         $money=readline("Digite o valor dado pelo cliente: ");
         if($total<=$money){
@@ -115,9 +112,8 @@ include "common.php";
         $products=get_products();
         $bool=false;
         for ($i = 0; $i < count($products); $i++) {
-            if ($products[$i]['id_procut'] == $item['id_procut']) {
+            if ($products[$i]['id_product'] == $item['id_product']) {
                 // Atualiza apenas os campos fornecidos
-                $products[$i]['name'] = $item['name'] ?? $products[$i]['name'];
                 $products[$i]['price'] = $item['price'] ?? $products[$i]['price'];
                 $products[$i]['stock'] = $item['stock'] ?? $products[$i]['stock'];
                 $bool = true;
@@ -131,5 +127,26 @@ include "common.php";
         } else {
             echo "Produto não encontrado!\n";
         }
+    }
+    //Mostrar Logs
+    function get_logs(){
+        $logs = file_get_contents("log.txt");
+        echo $logs;
+    }
+    //Mostrar Produtos
+    function print_products(){
+        print_r(get_products());
+    }
+    function delete_product($id_product){
+        $products=get_products();
+        foreach($products as $product){
+            if($product['id_product']==$id_product){;
+                array_splice($products,(int)$product);
+                post_product($products);
+                echo "\nProduto Excluido!!\n";
+                return true;
+            }
+        }
+        echo "\nProduto não encontrado\n";
     }
 ?>
