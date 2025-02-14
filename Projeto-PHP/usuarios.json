@@ -1,1 +1,1 @@
-[{"id":1,"user":"admin","password":"123","login":false},{"id":2,"user":"pedro","password":"1234","login":false},{"id":3,"user":"jonas","password":"1234","login":false}]
+[{"id":1,"user":"admin","password":"123"},{"id":2,"user":"pedro","password":"1234"},{"id":3,"user":"jonas","password":"1234"},{"id":4,"user":"lucas","password":"123"}]
