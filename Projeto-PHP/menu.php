@@ -1,6 +1,5 @@
 <?php
 include "fluxo_caixa.php";
-
 do {
     if (!isset($_SESSION['id'])) {
         echo "\n=== MENU ===\n";
@@ -9,7 +8,6 @@ do {
         echo "0 - Sair\n";
         echo "Escolha uma opção: ";
         $opcao = readline();
-
         switch ($opcao) {
             case 1:
                 $user = readline("Usuário: ");
@@ -31,7 +29,6 @@ do {
         echo "4 - Logout\n";
         echo "Escolha uma opção: ";
         $opcao = readline();
-
         switch ($opcao) {
             case 1:
                 $item = [
@@ -46,14 +43,12 @@ do {
                 $name = readline("Novo nome (ou deixe em branco para manter): ");
                 $price = readline("Novo preço (ou deixe em branco para manter): ");
                 $stock = readline("Novo estoque (ou deixe em branco para manter): ");
-    
                 $item = [
                     'id_procut' => $id_procut,
                     'name' => $name ?: null,
                     'price' => $price ?: null,
                     'stock' => $stock ?: null
                 ];
-    
                 update_product($item);
                 break;
                 break;

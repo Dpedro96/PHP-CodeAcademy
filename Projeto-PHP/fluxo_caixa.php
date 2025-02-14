@@ -7,14 +7,15 @@ include "common.php";
             foreach($users as $us){
                 if($user==$us['user']&&$password==$us['password']){
                     $_SESSION['id']=$us['id'];
-                    echo "Logado com sucesso!!\n";
-                    $_SESSION['caixa'] = readline();
+                    echo "\nLogado com sucesso!!\n";
+                    save_log("Usuário $user fez o login");
+                    $_SESSION['caixa'] = readline("Digite o valor do dinheiro em caixa: ");
                     return true;
                 }
             }
-            echo "Usuario não encontrado ou Senha incorreta\n";
+            echo "\nUsuario não encontrado ou Senha incorreta\n";
         }else{
-            echo "Usuário e Senha devem ser preenchido\n";
+            echo "\nUsuário e Senha devem ser preenchido\n";
         }
     }
     //Cadastro
@@ -22,12 +23,12 @@ include "common.php";
         $users=get_usuarios();
         foreach($users as $us){
             if($user==$us['user']){
-                echo "Usuario já existe\n";
+                echo "\nUsuario já existe\n";
                 return false;
             }
         }
         if($password!==$confirm_password){
-            echo "Senhas devem ser iguais\n";
+            echo "\nSenhas devem ser iguais\n";
             return false;
         }
         $new_user=[
@@ -37,25 +38,27 @@ include "common.php";
         ];
         $users[]=$new_user;
         post_usuarios($users);
-        echo "Usuário cadastrado com sucesso\n";
+        save_log("Foi criado o usuário $user");
+        echo "\nUsuário cadastrado com sucesso!!\n";
         return true;
     }
     //Deslogar
     function logout(){
         if(!isset( $_SESSION['id'])){
-            echo "Nenhum usuário logado\n";
+            echo "\nNenhum usuário logado\n";
             return false;
         }
         unset($_SESSION['id']);
         unset($_SESSION['caixa']);
-        echo "Deslogado com sucesso!!\n";
+        save_log("Usuário deslogou");
+        echo "\nDeslogado com sucesso!!\n";
         return true;
     }
     //Cadastrar Produtos
     function add_product($item){
         $products=get_products();
         $new_item=[
-            'id_procut'=>count($products) + 1,
+            'id_procut'=>(count($products)+1)?:1,
             'name'=>$item['name'],
             'price'=>$item['price'],
             'stock'=>$item['stock'],
@@ -63,7 +66,8 @@ include "common.php";
         ];
         $products[]=$new_item;
         post_product($products);
-        echo "Produto Cadastrado com sucesso!!";
+        save_log("Foi adicionado o produto ".$item['name']);
+        echo "\nProduto Cadastrado com sucesso!!\n";
     }
     //Vender Produto
     function sale_product(){
@@ -71,7 +75,7 @@ include "common.php";
         $products=get_products();
         $bool=false;
         do{
-            $id_product=readline("Digite o id do produto\n");
+            $id_product=readline("Digite o id do produto: ");
             for($i=0;$i<count($products);$i++){
                 if($products[$i]['id_procut']==$id_product){
                     if($products[$i]['stock']>0){
@@ -80,29 +84,33 @@ include "common.php";
                         $bool = true;
                         break;
                     }else{
-                        echo "Produto em falta!!\n";
+                        echo "\nProduto em falta!!\n";
                     }
                 }
             }
             if(!$bool){
-                echo "ID de produto não existe\n";
+                echo "\nID de produto não existe\n";
             }
-            $continue=readline('Deseja adicionar mais produtos?(S/N)\n');
-        }while($continue!='n'||$continue!='N');
-        $money=readline();
+            $continue=readline('Deseja adicionar mais produtos?(S/N)');
+        }while(strtolower($continue) !== 'n');
+        echo "Compra ficou no valor de R$ $total\n";
+        $money=readline("Digite o valor dado pelo cliente: ");
         if($total<=$money){
             $troco=$money-$total;
-            if($_SESSION['caixa']>$troco){
+            if($_SESSION['caixa']>=$troco){
                 $_SESSION['caixa']+=$total;
+                $_SESSION['caixa']-=$troco;
                 post_product($products);
-                echo "Venda realizada com sucesso";
+                save_log("Foi feita uma venda no valor de R$ $total");
+                echo "\nVenda realizada com sucesso! Troco: R$ $troco\n";
             }else{
-                echo "Venda Cancelada!! Dinheiro para troco insuficente";
+                echo "\nVenda Cancelada!! Dinheiro para troco insuficente";
             }
         }else{
-            echo "Dinheiro para troco insuficente";
+            echo "\nDinheiro insuficente\n";
         }
     }
+    //Atualizar Produto
     function update_product($item){
         $products=get_products();
         $bool=false;
@@ -118,6 +126,7 @@ include "common.php";
         }
         if ($bool) {
             post_product($products);
+            save_log("O produto".$item['name']."foi atualizado");
             echo "Produto atualizado com sucesso!\n";
         } else {
             echo "Produto não encontrado!\n";
